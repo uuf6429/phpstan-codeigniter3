@@ -1,0 +1,10 @@
+services:
+	-
+		class: CodeIgniter3\PHPStan\ConfigReturnTypeResolver
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+# TODO Work in progress
+# 	-
+# 		class: CodeIgniter3\PHPStan\ModelLoaderTypeResolver
+# 		tags:
+# 			- phpstan.typeSpecifier.methodTypeSpecifyingExtension

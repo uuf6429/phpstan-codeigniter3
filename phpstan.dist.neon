@@ -1,0 +1,13 @@
+includes:
+	- vendor/phpstan/phpstan-phpunit/extension.neon
+	- vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+	level: 10
+	paths:
+		- src
+		- tests
+	excludePaths:
+		- tests/fixtures
+	scanDirectories:
+		- vendor/codeigniter/framework
