@@ -9,6 +9,7 @@ defaults:
     run:
         shell: bash
 
+
 jobs:
     composer:
         name: Check composer.json
