@@ -49,7 +49,7 @@ jobs:
                   php-version: "8.3"
                   ini-file: development
             - run: composer update --no-interaction --prefer-dist --ansi --no-progress
-            - run: vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml --log-junit=junit.xml --testdox
+            - run: vendor/bin/phpunit --colors=always --coverage-clover=${{ github.workspace }}/coverage.xml --log-junit=${{ github.workspace }}/junit.xml --testdox
             - uses: codecov/codecov-action@v4
               if: ${{ !env.ACT && !cancelled() }}
               with:
