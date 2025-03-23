@@ -32,7 +32,7 @@ jobs:
                   coverage: none
                   php-version: '8.3'
             - run: composer update --ansi --no-progress --prefer-dist --no-interaction
-            - run: vendor/bin/phpstan analyse --error-format=junit > junit.xml
+            - run: vendor/bin/phpstan --ansi --no-progress analyse
             - uses: codecov/test-results-action@v1
               if: ${{ !env.ACT && !cancelled() }}
               with:

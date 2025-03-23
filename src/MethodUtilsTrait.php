@@ -6,6 +6,8 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 
 /**
@@ -43,7 +45,19 @@ trait MethodUtilsTrait
 		}
 
 		if ($arg->value instanceof ClassConstFetch) {
-			return $arg->value->class;
+			if ($arg->value->name instanceof Identifier && $arg->value->name->name === 'class') {
+				if ($arg->value->class instanceof FullyQualified) {
+					return $arg->value->class->name;
+				}
+				throw new \RuntimeException(sprintf(
+					'Unexpected class node type encountered while resolving class constant: %s',
+					get_debug_type($arg->value->class),
+				));
+			}
+			throw new \RuntimeException(sprintf(
+				'Unexpected constant node type encountered while resolving class constant: %s',
+				get_debug_type($arg->value->name),
+			));
 		}
 
 		if ($arg->value instanceof ConstFetch) {
