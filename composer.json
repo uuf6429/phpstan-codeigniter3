@@ -26,13 +26,9 @@
 	"autoload-dev": {
 		"psr-4": {
 			"CodeIgniter3\\PHPStanTests\\": "tests/"
-		}
-	},
-	"scripts": {
-		"test": "phpunit --colors=always",
-		"lint": [
-			"phpstan analyse"
-		],
-		"try": "cd vendor/codeigniter/framework && phpstan analyse --configuration ../../../tests/codeigniter-test.neon ../../../tests/fixtures"
+		},
+		"classmap": [
+			"tests/fixtures/"
+		]
 	}
 }

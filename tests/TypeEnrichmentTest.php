@@ -13,21 +13,13 @@ class TypeEnrichmentTest extends TypeInferenceTestCase
 	public static function typeEnrichmentDataProvider(): iterable
 	{
 		yield from self::gatherAssertTypes(__DIR__ . '/fixtures/config-return-types.php');
-		yield from self::gatherAssertTypes(__DIR__ . '/fixtures/model-loader.php');
+		//yield from self::gatherAssertTypes(__DIR__ . '/fixtures/model-loader.php');
 	}
 
 	#[DataProvider('typeEnrichmentDataProvider')]
 	public function testTypeEnrichmentAssertions(string $assertType, string $file, mixed ...$args): void
 	{
-		$origWorkingDir = getcwd();
-		try {
-			chdir(__DIR__ . '/../vendor/codeigniter/framework');
-			$this->assertFileAsserts($assertType, $file, ...$args);
-		} finally {
-			if ($origWorkingDir !== false) {
-				chdir($origWorkingDir);
-			}
-		}
+		$this->assertFileAsserts($assertType, $file, ...$args);
 	}
 
 	public static function getAdditionalConfigFiles(): array

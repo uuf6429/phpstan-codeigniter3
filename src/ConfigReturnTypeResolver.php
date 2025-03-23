@@ -2,9 +2,7 @@
 
 namespace CodeIgniter3\PHPStan;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
@@ -21,6 +19,8 @@ use PHPStan\Type\Type;
  */
 class ConfigReturnTypeResolver implements DynamicMethodReturnTypeExtension
 {
+	use MethodUtilsTrait;
+
 	private const array CONFIG_GETTER = [\CI_Config::class, 'item'];
 	private const string CONFIG_LOADER_SCRIPT = __DIR__ . '/ci-config-loader.php';
 
@@ -49,22 +49,13 @@ class ConfigReturnTypeResolver implements DynamicMethodReturnTypeExtension
 	 */
 	private function getConfigKeyPath(MethodCall $methodCall): array
 	{
-		$argc = count($methodCall->args);
-		if ($argc !== 1 && $argc !== 2) {
-			throw new \RuntimeException("`CI_Config::item()` requires at least one parameter, and at most two; but got $argc");
-		}
+		$this->assertArgCount(\CI_Config::class, $methodCall, 1, 2);
 
 		$path = [];
-		foreach ($methodCall->args as $index => $arg) {
-			if (!$arg instanceof Arg || !$arg->value instanceof String_) {
-				throw new \RuntimeException("Parameter #$index of `CI_Config::item()` must be string literals");
+		foreach (array_keys($methodCall->args) as $index) {
+			if (($value = $this->getArgAsString(\CI_Config::class, $methodCall, $index)) !== '') {
+				$path[] = $value;
 			}
-
-			if ($arg->value->value === '') {
-				continue;
-			}
-
-			$path[] = $arg->value->value;
 		}
 
 		return $path;

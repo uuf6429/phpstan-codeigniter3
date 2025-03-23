@@ -1,0 +1,60 @@
+name: CI
+
+on:
+    push:
+    pull_request:
+    workflow_dispatch:
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    composer:
+        name: Check composer.json
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  php-version: '8.1'
+            - run: composer validate --strict --no-check-lock
+
+    phpstan:
+        name: Analyse code
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  php-version: '8.3'
+            - run: composer update --ansi --no-progress --prefer-dist --no-interaction
+            - run: vendor/bin/phpstan analyse --error-format=junit > junit.xml
+            - uses: codecov/test-results-action@v1
+              if: ${{ !env.ACT && !cancelled() }}
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+
+    phpunit:
+        name: Run tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: shivammathur/setup-php@v2
+              with:
+                  coverage: "xdebug"
+                  php-version: "8.3"
+                  ini-file: development
+            - run: composer update --no-interaction --prefer-dist --ansi --no-progress
+            - run: vendor/bin/phpunit --colors=always --coverage-clover=coverage.xml --log-junit=junit.xml --testdox
+            - uses: codecov/codecov-action@v4
+              if: ${{ !env.ACT && !cancelled() }}
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: coverage.xml
+            - uses: codecov/test-results-action@v1
+              if: ${{ !env.ACT && !cancelled() }}
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}

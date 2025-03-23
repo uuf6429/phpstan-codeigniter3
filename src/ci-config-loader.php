@@ -6,7 +6,7 @@
  * A script to be run in isolation for loading CodeIgniter configuration files into one big area.
  * The script has three steps:
  * 1. Initialize the global environment - global constants, functions etc that config files may depend on.
- * 2. Load all config files in `%WORKING_DIRECTORY%/application/config`.
+ * 2. Load all config files in `%currentWorkingDirectory%/application/config`.
  * 3. Serialize and print  the config to STDOUT.
  *
  * Why do we do it in an anonymous class/object? Because config files may also depend on `$this`, and since it is a
